@@ -1,11 +1,13 @@
 package com.library.impl;
 
 import com.library.exception.DuplicateEntryException;
+import com.library.exception.LibraryHasBooksException;
 import com.library.exception.ResourceNotFoundException;
 import com.library.model.City;
 import com.library.model.Library;
 import com.library.payload.request.LibraryRequest;
 import com.library.payload.response.LibraryResponse;
+import com.library.repository.BookRepository;
 import com.library.repository.CityRepository;
 import com.library.repository.LibraryRepository;
 import com.library.service.LibraryService;
@@ -18,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class LibraryServiceImpl implements LibraryService {
 
     @Autowired
@@ -26,6 +27,9 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Autowired
     private CityRepository cityRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @Override
     @Transactional
@@ -58,7 +62,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public List<LibraryResponse> getAllLibraries() {
-        List<Library> libraries = libraryRepository.findAllByOrderByNameAsc();
+        List<Library> libraries = libraryRepository.findAllByOrderByCreatedAtDesc();
         return libraries.stream().map(this::mapToLibraryResponse).collect(Collectors.toList());
     }
 
@@ -85,8 +89,18 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     @Transactional
+//    public void deleteLibrary(Long id) {
+//        Library library = libraryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//        libraryRepository.delete(library);
+//    }
     public void deleteLibrary(Long id) {
-        Library library = libraryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Library library = libraryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Library not found"));
+
+        boolean hasBooks = bookRepository.existsByLibrary(library);
+        if (hasBooks) {
+            throw new LibraryHasBooksException("Cannot delete library as it has associated books");
+        }
+
         libraryRepository.delete(library);
     }
 

@@ -1,5 +1,6 @@
 package com.library.impl;
 
+import com.library.exception.ResourceNotFoundException;
 import com.library.model.Book;
 import com.library.model.IssuedBook;
 import com.library.model.User;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class IssueBookImpl implements IssueBookService {
 
     @Autowired
@@ -41,7 +41,7 @@ public class IssueBookImpl implements IssueBookService {
                 if(userOptional.isPresent()){
                     User user = userOptional.get();
                     if(!user.getConfirmationCode().equals(confirmationCode)){
-                        throw new RuntimeException("Invalid Confirmation Code.");
+                        throw new ResourceNotFoundException("Invalid Confirmation Code.");
                     }
                 }
                 book.setQuantity(book.getQuantity() - 1);

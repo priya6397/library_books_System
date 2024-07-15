@@ -1,11 +1,13 @@
 package com.library.impl;
 
+import com.library.exception.CityHasLibrariesException;
 import com.library.exception.DuplicateEntryException;
 import com.library.exception.ResourceNotFoundException;
 import com.library.model.City;
 import com.library.payload.request.CityRequest;
 import com.library.payload.response.CityResponse;
 import com.library.repository.CityRepository;
+import com.library.repository.LibraryRepository;
 import com.library.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class CityServiceImpl implements CityService {
 
     @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private LibraryRepository libraryRepository;
 
     @Override
     @Transactional
@@ -63,9 +66,19 @@ public class CityServiceImpl implements CityService {
 
     @Override
     @Transactional
+//    public void deleteCity(Long id) {
+//        City user = cityRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("City not found"));
+//        cityRepository.delete(user);
+//    }
     public void deleteCity(Long id) {
-        City user = cityRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("City not found"));
-        cityRepository.delete(user);
+        City city = cityRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("City not found"));
+
+        boolean hasLibraries = libraryRepository.existsByCity(city);
+        if (hasLibraries) {
+            throw new CityHasLibrariesException("Cannot delete city as it has associated libraries");
+        }
+
+        cityRepository.delete(city);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.library.repository;
 
+import com.library.model.Book;
 import com.library.model.IssuedBook;
 import com.library.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,7 @@ public interface IssuedBookRepository extends JpaRepository<IssuedBook,Long> {
 
     List<IssuedBook> findByUserAndIsReturnedFalse(User user);
     void deleteAllByUser(User user);
+    List<IssuedBook> findByUserAndIsReturnedTrue(User user);
+
+    boolean existsByBook(Book book);
 }

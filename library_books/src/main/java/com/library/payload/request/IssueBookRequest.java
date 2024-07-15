@@ -1,7 +1,9 @@
 package com.library.payload.request;
 
 
+import com.library.Utils.Alphanumeric;
 import com.library.Utils.DateConstraint;
+import com.library.Utils.Numeric;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +18,11 @@ import java.time.LocalDate;
 @Setter
 public class IssueBookRequest {
     private Long bookId;
+
+//    @Numeric
     private Long userId;
+
+//    @Alphanumeric
     private String confirmationCode;
 
     @DateConstraint

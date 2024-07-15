@@ -45,7 +45,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBook(@ Valid @PathVariable Long id, @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<BookResponse> updateBook(@PathVariable Long id, @RequestBody BookRequest bookRequest) {
         BookResponse bookResponse = bookService.updateBook(id, bookRequest);
         return ResponseEntity.ok(bookResponse);
     }
@@ -57,7 +57,7 @@ public class BookController {
     }
 
     @PostMapping("/issue")
-    public ResponseEntity<Book> issueBook(@RequestBody IssueBookRequest bookRequest) {
+    public ResponseEntity<Book> issueBook(@Valid @RequestBody IssueBookRequest bookRequest) {
         return new ResponseEntity<>(issueBookService.issueBook(bookRequest.getBookId(), bookRequest.getUserId(), bookRequest.getConfirmationCode(),bookRequest.getExpiryDate()), HttpStatus.OK);
     }
 

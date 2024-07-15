@@ -1,5 +1,6 @@
 package com.library.impl;
 
+import com.library.exception.BookIssuedException;
 import com.library.exception.DuplicateEntryException;
 import com.library.exception.ResourceNotFoundException;
 import com.library.model.Book;
@@ -7,6 +8,7 @@ import com.library.model.Library;
 import com.library.payload.request.BookRequest;
 import com.library.payload.response.BookResponse;
 import com.library.repository.BookRepository;
+import com.library.repository.IssuedBookRepository;
 import com.library.repository.LibraryRepository;
 import com.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-
 public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
-
     @Autowired
     private LibraryRepository libraryRepository;
+    @Autowired
+    private IssuedBookRepository issuedBookRepository;
     @Override
     @Transactional
     public BookResponse createBook(BookRequest bookRequest) {
@@ -86,8 +88,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+//    public void deleteBook(Long id) {
+//        Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+//        bookRepository.delete(book);
+//    }
+
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
+        boolean isIssued = issuedBookRepository.existsByBook(book);
+        if (isIssued) {
+            throw new BookIssuedException("Cannot delete book as it is issued to users");
+        }
+
         bookRepository.delete(book);
     }
 

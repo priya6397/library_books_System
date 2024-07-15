@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = DateConstraintValidator.class)
 
 public @interface DateConstraint {
-    String message() default "Start date must be today or a future date.";
+    String message() default "Date must be today or a future date.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

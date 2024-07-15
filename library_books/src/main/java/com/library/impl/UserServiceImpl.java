@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -93,7 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    private UserResponse mapToUserResponse(User user) {
+    public UserResponse mapToUserResponse(User user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
         userResponse.setFullName(user.getFullName());
@@ -116,12 +115,14 @@ public class UserServiceImpl implements UserService {
     public void checkDeleteUserIssuedBooks(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         List<IssuedBook> issuedBooks = issuedBookRepository.findByUserAndIsReturnedFalse(user);
+        List<IssuedBook> issuedBooksReturn = issuedBookRepository.findByUserAndIsReturnedTrue(user);
 
         for (IssuedBook issuedBook : issuedBooks) {
             Book book = issuedBook.getBook();
             book.setQuantity(book.getQuantity() + 1);
             bookRepository.save(book);
         }
+        issuedBookRepository.deleteAll(issuedBooksReturn);
         issuedBookRepository.deleteAll(issuedBooks);
     }
 
@@ -132,11 +133,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
+//    @Override
+//    @Transactional
+//    public Page<User> searchUsersByFullName(String fullName, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        return userRepository.findByFullNameContaining(fullName, pageable);
+//    }
+
     @Override
     @Transactional
-    public Page<User> searchUsersByFullName(String fullName, int page, int size) {
+    public Page<User> searchUsersByFullName(String searchQuery, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findByFullNameContaining(fullName, pageable);
+        return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPhoneNoContainingIgnoreCaseOrAddressContainingIgnoreCase(searchQuery,searchQuery,searchQuery,searchQuery,pageable);
     }
 
 }
