@@ -39,4 +39,6 @@ public class UserRequest {
     @NotEmpty(message = "Email is required")
     @EmailWithTLD
     private String email;
+
+    private String aadharNo;
 }

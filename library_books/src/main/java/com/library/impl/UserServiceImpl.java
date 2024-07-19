@@ -42,7 +42,8 @@ public class UserServiceImpl implements UserService {
         user.setAddress(userRequest.getAddress());
         user.setPhoneNo(userRequest.getPhoneNo());
         user.setEmail(userRequest.getEmail());
-        user.setConfirmationCode(User.generateConfirmationCode());
+//        user.setConfirmationCode(User.generateConfirmationCode());
+        user.setAadharNo(userRequest.getAadharNo());
         user.setActive(true);
         user.setCreatedAt(LocalDate.now());
         user.setUpdatedAt(LocalDate.now());
@@ -78,6 +79,7 @@ public class UserServiceImpl implements UserService {
         user.setFullName(userRequest.getFullName());
         user.setAddress(userRequest.getAddress());
         user.setPhoneNo(userRequest.getPhoneNo());
+        user.setAadharNo(userRequest.getAadharNo());
         user.setEmail(userRequest.getEmail());
         user.setUpdatedAt(LocalDate.now());
         user = userRepository.save(user);
@@ -88,7 +90,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        userRepository.delete(user);
+//        userRepository.delete(user);
+        user.setActive(false);
+        userRepository.save(user);
     }
 
     @Transactional
@@ -99,7 +103,8 @@ public class UserServiceImpl implements UserService {
         userResponse.setAddress(user.getAddress());
         userResponse.setPhoneNo(user.getPhoneNo());
         userResponse.setEmail(user.getEmail());
-        userResponse.setConfirmationCode(user.getConfirmationCode());
+//        userResponse.setConfirmationCode(user.getConfirmationCode());
+        userResponse.setAadharNo(user.getAadharNo());
         userResponse.setCreatedAt(user.getCreatedAt());
         return userResponse;
     }
@@ -130,7 +135,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Page<User> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+        return  userRepository.findByIsActive(true, pageable);
     }
 
 //    @Override
@@ -144,7 +149,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Page<User> searchUsersByFullName(String searchQuery, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPhoneNoContainingIgnoreCaseOrAddressContainingIgnoreCase(searchQuery,searchQuery,searchQuery,searchQuery,pageable);
+        return userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPhoneNoContainingIgnoreCaseOrAddressContainingIgnoreCaseAndIsActive(searchQuery,searchQuery,searchQuery,searchQuery,true,pageable);
     }
 
 }

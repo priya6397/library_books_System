@@ -23,7 +23,7 @@ public class IssueBookRequest {
     private Long userId;
 
 //    @Alphanumeric
-    private String confirmationCode;
+    private String aadharNo;
 
     @DateConstraint
 //    @FutureOrPresent(message = "Date cannot be in the past")

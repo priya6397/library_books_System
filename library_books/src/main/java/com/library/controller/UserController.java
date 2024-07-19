@@ -56,7 +56,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.checkDeleteUserIssuedBooks(id);
+//        userService.checkDeleteUserIssuedBooks(id);
         userService.deleteUser(id);
 
         return ResponseEntity.noContent().build();
@@ -85,7 +85,8 @@ public class UserController {
                 user.getAddress(),
                 user.getPhoneNo(),
                 user.getEmail(),
-                user.getConfirmationCode(),
+//                user.getConfirmationCode(),
+                user.getAadharNo(),
                 user.getCreatedAt()
         )).collect(Collectors.toList());
 

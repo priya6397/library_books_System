@@ -10,8 +10,9 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByTitle(String title);
     List<Book> findAllByOrderByTitleAsc();
-    List<Book> findByLibraryCityId(Long cityId);
-    List<Book> findByLibraryId(Long libraryId);
-    List<Book> findByLibraryCityIdAndLibraryId(Long cityId, Long libraryId);
+    List<Book> findByLibraryCityIdAndLibraryIdAndIsActive(Long cityId, Long libraryId, Boolean isActive);
+    List<Book> findByLibraryCityIdAndIsActive(Long cityId, Boolean isActive);
+    List<Book> findByLibraryIdAndIsActive(Long libraryId, Boolean isActive);
     boolean existsByLibrary(Library library);
+    List<Book> findByIsActive(boolean b);
 }

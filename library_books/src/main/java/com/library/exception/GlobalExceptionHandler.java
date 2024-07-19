@@ -70,10 +70,10 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleMyException(RuntimeException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<String> handleMyException(RuntimeException ex) {
+//        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(BookIssuedException.class)
     public ResponseEntity<String> handleBookIssuedException(BookIssuedException ex) {
@@ -87,6 +87,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CityHasLibrariesException.class)
     public ResponseEntity<String> handleCityHasLibrariesException(CityHasLibrariesException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<String> handleCustomException(CustomException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

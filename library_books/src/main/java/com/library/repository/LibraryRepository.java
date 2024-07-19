@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface LibraryRepository extends JpaRepository<Library,Long> {
     List<Library> findByCityId(Long cityId);
-    List<Library>  findAllByOrderByCreatedAtDesc();
+    List<Library>  findAllByIsActiveOrderByCreatedAtDesc(boolean isActive);
     boolean existsByName(String name);
 
     boolean existsByCity(City city);

@@ -13,6 +13,7 @@ public interface IssuedBookRepository extends JpaRepository<IssuedBook,Long> {
     List<IssuedBook> findByUserAndIsReturnedFalse(User user);
     void deleteAllByUser(User user);
     List<IssuedBook> findByUserAndIsReturnedTrue(User user);
+    boolean existsByUserAndBookAndIsReturnedFalse(User user, Book book);
 
     boolean existsByBook(Book book);
 }

@@ -50,7 +50,7 @@ public class CityServiceImpl implements CityService {
     @Override
     @Transactional
     public List<CityResponse> getAllCities() {
-        List<City> users = cityRepository.findAllByOrderByNameAsc();
+        List<City> users = cityRepository.findAllByIsActiveOrderByNameAsc(true);
         return users.stream().map(this::mapToCityResponse).collect(Collectors.toList());
     }
 
@@ -73,12 +73,14 @@ public class CityServiceImpl implements CityService {
     public void deleteCity(Long id) {
         City city = cityRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("City not found"));
 
-        boolean hasLibraries = libraryRepository.existsByCity(city);
-        if (hasLibraries) {
-            throw new CityHasLibrariesException("Cannot delete city as it has associated libraries");
-        }
+//        boolean hasLibraries = libraryRepository.existsByCity(city);
+//        if (hasLibraries) {
+//            throw new CityHasLibrariesException("Cannot delete city as it has associated libraries");
+//        }
 
-        cityRepository.delete(city);
+//        cityRepository.delete(city);
+        city.setActive(false);
+        cityRepository.save(city);
     }
 
     @Transactional

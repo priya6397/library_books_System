@@ -96,12 +96,14 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
-        boolean isIssued = issuedBookRepository.existsByBook(book);
-        if (isIssued) {
-            throw new BookIssuedException("Cannot delete book as it is issued to users");
-        }
-
-        bookRepository.delete(book);
+//        boolean isIssued = issuedBookRepository.existsByBook(book);
+//        if (isIssued) {
+//            throw new BookIssuedException("Cannot delete book as it is issued to users");
+//        }
+//
+//        bookRepository.delete(book);
+        book.setActive(false);
+        bookRepository.save(book);
     }
 
     @Transactional
@@ -126,13 +128,13 @@ public class BookServiceImpl implements BookService {
     public List<BookResponse> getAllBooks(Long cityId, Long libraryId) {
         List<Book> books;
         if (cityId != null && libraryId != null) {
-            books = bookRepository.findByLibraryCityIdAndLibraryId(cityId, libraryId);
+            books = bookRepository.findByLibraryCityIdAndLibraryIdAndIsActive(cityId, libraryId, true);
         } else if (cityId != null) {
-            books = bookRepository.findByLibraryCityId(cityId);
+            books = bookRepository.findByLibraryCityIdAndIsActive(cityId, true);
         } else if (libraryId != null) {
-            books = bookRepository.findByLibraryId(libraryId);
+            books = bookRepository.findByLibraryIdAndIsActive(libraryId, true);
         } else {
-            books = bookRepository.findAll();
+            books = bookRepository.findByIsActive(true);
         }
         return books.stream().map(this::mapToBookResponse).collect(Collectors.toList());
     }

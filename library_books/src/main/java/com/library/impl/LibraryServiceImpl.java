@@ -62,7 +62,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public List<LibraryResponse> getAllLibraries() {
-        List<Library> libraries = libraryRepository.findAllByOrderByCreatedAtDesc();
+        List<Library> libraries = libraryRepository.findAllByIsActiveOrderByCreatedAtDesc(true);
         return libraries.stream().map(this::mapToLibraryResponse).collect(Collectors.toList());
     }
 
@@ -96,12 +96,14 @@ public class LibraryServiceImpl implements LibraryService {
     public void deleteLibrary(Long id) {
         Library library = libraryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Library not found"));
 
-        boolean hasBooks = bookRepository.existsByLibrary(library);
-        if (hasBooks) {
-            throw new LibraryHasBooksException("Cannot delete library as it has associated books");
-        }
-
-        libraryRepository.delete(library);
+//        boolean hasBooks = bookRepository.existsByLibrary(library);
+//        if (hasBooks) {
+//            throw new LibraryHasBooksException("Cannot delete library as it has associated books");
+//        }
+//
+//        libraryRepository.delete(library);
+        library.setActive(false);
+        libraryRepository.save(library);
     }
 
     @Override

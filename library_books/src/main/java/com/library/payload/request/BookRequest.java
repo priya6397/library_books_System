@@ -53,6 +53,8 @@ public class BookRequest {
     @Min(value = 1, message = "Quantity must be greater than 0 and cannot be null")
     private int quantity;
 
+    private String aadharNo;
+
     private Long libraryId;
     private Long CityId;
 }

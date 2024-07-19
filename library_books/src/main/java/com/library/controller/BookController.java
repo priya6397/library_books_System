@@ -58,7 +58,7 @@ public class BookController {
 
     @PostMapping("/issue")
     public ResponseEntity<Book> issueBook(@Valid @RequestBody IssueBookRequest bookRequest) {
-        return new ResponseEntity<>(issueBookService.issueBook(bookRequest.getBookId(), bookRequest.getUserId(), bookRequest.getConfirmationCode(),bookRequest.getExpiryDate()), HttpStatus.OK);
+        return new ResponseEntity<>(issueBookService.issueBook(bookRequest.getBookId(), bookRequest.getUserId(), bookRequest.getAadharNo(),bookRequest.getExpiryDate()), HttpStatus.OK);
     }
 
     @PostMapping("/return/{issuedBookId}")

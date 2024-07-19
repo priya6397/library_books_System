@@ -1,5 +1,7 @@
 package com.library.impl;
 
+import com.library.exception.BookIssuedException;
+import com.library.exception.CustomException;
 import com.library.exception.ResourceNotFoundException;
 import com.library.model.Book;
 import com.library.model.IssuedBook;
@@ -32,7 +34,7 @@ public class IssueBookImpl implements IssueBookService {
 
     @Override
     @Transactional
-    public Book issueBook(Long bookId, Long userId,String confirmationCode, LocalDate expiryDate) {
+    public Book issueBook(Long bookId, Long userId,String aadharNo, LocalDate expiryDate) {
         Optional<Book> optionalBook = bookRepository.findById(bookId);
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
@@ -40,25 +42,28 @@ public class IssueBookImpl implements IssueBookService {
                 Optional<User> userOptional = userRepository.findById(userId);
                 if(userOptional.isPresent()){
                     User user = userOptional.get();
-                    if(!user.getConfirmationCode().equals(confirmationCode)){
-                        throw new ResourceNotFoundException("Invalid Confirmation Code.");
+                    if (issuedBookRepository.existsByUserAndBookAndIsReturnedFalse(user, book)) {
+                        throw new BookIssuedException("User has already issued this book and has not returned it");
+                    }
+                    if(!user.getAadharNo().equals(aadharNo)){
+                        throw new ResourceNotFoundException("Invalid Aadhar Number.");
                     }
                 }
                 book.setQuantity(book.getQuantity() - 1);
                 bookRepository.save(book);
                 IssuedBook issuedBook = new IssuedBook();
                 issuedBook.setBook(book);
-                issuedBook.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
+                issuedBook.setUser(userRepository.findById(userId).orElseThrow(() -> new CustomException("User not found")));
                 issuedBook.setIssueDate(LocalDate.now());
                 issuedBook.setExpiryDate(expiryDate);
                 issuedBookRepository.save(issuedBook);
 
                 return book;
             } else {
-                throw new RuntimeException("No more books available");
+                throw new CustomException("No more books available");
             }
         } else {
-            throw new RuntimeException("Book not found");
+            throw new CustomException("Book not found");
         }
     }
 
@@ -77,13 +82,13 @@ public class IssueBookImpl implements IssueBookService {
 
             return book;
         } else {
-            throw new RuntimeException("Issued book not found");
+            throw new CustomException("Issued book not found");
         }
     }
 
     @Transactional
     public int getBookQuantity(Long bookId) {
-        return bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found")).getQuantity();
+        return bookRepository.findById(bookId).orElseThrow(() -> new CustomException("Book not found")).getQuantity();
     }
 
     @Transactional

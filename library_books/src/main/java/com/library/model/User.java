@@ -26,25 +26,26 @@ public class User {
     private String address;
     private String phoneNo;
     private String email;
-    private String confirmationCode;
+//    private String confirmationCode;
+    private String aadharNo;
     private boolean isActive;
     private LocalDate createdAt;
     private LocalDate updatedAt;
     private Long updatedBy;
 
-    public static String generateConfirmationCode() {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        SecureRandom random = new SecureRandom();
-        StringBuilder confirmationCode = new StringBuilder(6);
-
-        for (int i = 0; i < 6; i++) {
-            int index = random.nextInt(characters.length());
-            confirmationCode.append(characters.charAt(index));
-        }
-
-        return confirmationCode.toString();
-    }
-    public void setConfirmationCode() {
-        this.confirmationCode = generateConfirmationCode();
-    }
+//    public static String generateConfirmationCode() {
+//        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//        SecureRandom random = new SecureRandom();
+//        StringBuilder confirmationCode = new StringBuilder(6);
+//
+//        for (int i = 0; i < 6; i++) {
+//            int index = random.nextInt(characters.length());
+//            confirmationCode.append(characters.charAt(index));
+//        }
+//
+//        return confirmationCode.toString();
+//    }
+//    public void setConfirmationCode() {
+//        this.confirmationCode = generateConfirmationCode();
+//    }
 }
